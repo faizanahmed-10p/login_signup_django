@@ -4,7 +4,7 @@ from datetime import datetime
 # Create your models here.
 class VoterProfileInfo(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    #id = models.CharField(primary_key=True, max_length=128)
+   
     mother = models.CharField(max_length=128)
     father = models.CharField(max_length=128)
     birth_city = models.CharField(max_length=128)
@@ -17,7 +17,13 @@ class CandidateProfileInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     party = models.CharField(max_length=128, blank=True)
     independent_status = models.BooleanField(default=False)
+    constituency = models.CharField(max_length=128, blank = True)
 
 
 def __str__(self):
   return self.user.username
+
+
+class CandidateVote(models.Model):
+    candidate_vote_id = models.AutoField(primary_key = True)
+    candidate_id = models.CharField(max_length=128)

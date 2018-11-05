@@ -40,10 +40,10 @@
                                             <tr>
                                                 <td >
                                                     <div class="radio">
-                                                        <label for="choice{{ forloop.counter }}"><input type="radio" name="candidate" id="candidate{{ forloop.counter }}" value="{{ candidate.id }}">{{ value.politicalPartyName }}</label>
+                                                        <label for="choice{{ forloop.counter }}"><input type="radio" name="candidate" id="candidate{{ forloop.counter }}" value="{{ candidate.id }}">{{ value.user.first_name }}</label>
                                                     </div>
                                                 </td>
-                                                <td class="center-align"> {{ value.politicalPartyId }}</td>
+                                                <td class="center-align"> {{ value.party }}</td>
                                             </tr>                                       
                                             {% endfor %}
                                         </tbody>

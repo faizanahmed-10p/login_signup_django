@@ -16,14 +16,13 @@ class VoterProfileInfoForm(forms.ModelForm):
     
     CHOICES = (('male', 'Male',), ('female', 'Female',))
 
-    #id = forms.CharField(label="CNIC", validators=[RegexValidator('(\d{5}-\d{7}-\d{1})', message="CNIC should be in the format xxxxx-xxxxxxx-x")], widget=forms.TextInput(attrs={'class':'form-control','placeholder':"CNIC Number"}))
+    #id = forms.CharField(label="CNIC", validators=[RegexValidator('(\d{13})', message="CNIC should be in the format xxxxx-xxxxxxx-x")], widget=forms.TextInput(attrs={'class':'form-control','placeholder':"CNIC Number"}))
     mother = forms.CharField(label="Mother's name", widget=forms.TextInput(attrs={'class':'form-control','placeholder':"Mother's Name"}))
     father = forms.CharField(label="Father's name", widget=forms.TextInput(attrs={'class':'form-control','placeholder':"Father's Name"}))
     gender = forms.ChoiceField(label='Gender', widget=forms.RadioSelect, choices=CHOICES)
     birth_city = forms.CharField(label="Birth City", widget=forms.TextInput(attrs={'class':'form-control','placeholder':"Birth City"}))
     birth_district = forms.CharField(label="Birth District", widget=forms.TextInput(attrs={'class':'form-control','placeholder':"Birth District"}))
-
-
+    
     class Meta():
         model = VoterProfileInfo
         fields = ( 'mother' , 'father', 'gender', 'birth_city', 'birth_district')
@@ -33,13 +32,13 @@ class CandidateProfileInfoForm(forms.ModelForm):
     CHOICES = (('PPP', 'PPP',), ('MQM', 'Mutahida Qoumi Movement',), ('PTI', 'Pakistan Tehreek-e-Insaf'))
 
     #id = forms.CharField(label="CNIC", widget=forms.TextInput(attrs={'class':'form-control','placeholder':"CNIC Number"}))
-    independent_status = forms.BooleanField(label='Independent Status', required=False)
-    party = forms.ChoiceField(label='Political Party', widget=forms.RadioSelect, choices=CHOICES, required=False)
+    #independent_status = forms.BooleanField(label='Independent Status', required=False)
+    #party = forms.ChoiceField(label='Political Party', widget=forms.RadioSelect, choices=CHOICES, required=False)
 
 
     class Meta():
         model = CandidateProfileInfo
-        fields = ( 'party', 'independent_status')
+        fields = ()
 
 class BallotBox(forms.ModelForm):
 
