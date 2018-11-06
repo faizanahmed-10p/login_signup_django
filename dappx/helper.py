@@ -1,7 +1,7 @@
 import requests
 
 
-server = 'https://2238cf30.ngrok.io'
+server = 'https://dc551e9d.ngrok.io'
 
 
 provinces= {1:'Khyber Pakhtunkhwa',
@@ -59,3 +59,11 @@ def districtGenerator(cnic):
     generatedDistrict = requests.get(query_district_id).json()
     return generatedDistrict
     
+def queryCandidateInfo(json1, lenOfJson1, selectedCandidate):
+    i=0
+
+    while(i<lenOfJson1):
+        if(json1[i]["candidateProfile"]["candidateID"] == selectedCandidate):
+            return json1[i]["candidateVoteId"]
+        i=i+1
+    return "Candidate not found"

@@ -5,10 +5,11 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from dappx.models import CandidateProfileInfo, CandidateVote
-from dappx.helper import server, districtGenerator
+from dappx.helper import server, districtGenerator, queryCandidateInfo
 import requests
 import json
 from django.core import serializers
+
 
 
 def index(request):
@@ -49,7 +50,6 @@ def register(request):
                  "voterID": user.username,
                  "votedOrNot": "false"
             }
-            print(voter_profile)
 
             requests.post(server+'/api/voter', json = voter_profile)
             requests.post(server+'/api/ifVoted', json = ifVoted_data)
@@ -74,7 +74,6 @@ def candidate_register(request):
         constituency_list.append(( contituency[i]["districtName"] ))
         i= i+1
     political_parties = requests.get(server+'/api/politicalParty').json()
-    print(political_parties)
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
         profile_form = CandidateProfileInfoForm(data=request.POST)
@@ -105,14 +104,11 @@ def candidate_register(request):
                 "$class": "org.ecp.voting.candidateVote",
                 "candidateVoteId": candidateVoteId,
                 "totalVote": "0",
-                "candidateProfile": json.dumps(candidate_data),
+                "candidateProfile": candidate_data,
                 "candidateDistrict": district_info[0]
             }           
             candidate_payload = json.dumps(candidate_data)
-            print(candidate_vote_data)
-            print(requests.post(server+'/api/candidate', json = candidate_data))
-            requests.post(server+'/api/candidate', json = candidate_data)
-            print(requests.post(server+'/api/candidateVote', json = candidate_vote_data))
+            candidate_data_request = requests.post(server+'/api/candidate', json = candidate_data)
             requests.post(server+'/api/candidateVote', json = candidate_vote_data)
             registered = True
 
@@ -151,31 +147,27 @@ def user_login(request):
 
 def ballot_box(request):
     voted = False
+
     political_parties = requests.get(server+'/api/politicalParty')
     resp = political_parties.json()
     if request.user.is_authenticated:
-        print(request.user.username)
         contituency = districtGenerator(request.user.username)
         contituency_name = str(contituency['districtName'])
-        print(contituency_name)
         constituency_candidates = CandidateProfileInfo.objects.filter(constituency=contituency_name)
-        print(constituency_candidates)
-    if request.method == 'POST':
-        voted=True
-
-
-    else:
-        print(type(resp))
-        #payload = political_parties.json()
-        payload = {
-            "candidate1" : {
-                "first_name" : "org.ecp.voting.voter", 
-                "party":  "4220117774685",
-            },
-            "candidate2" : {
-                "first_name" : "org.ecp", 
-                "party":  "223656545",
+        if request.method == 'POST':
+            voted=True
+            selected_cadidate_id = str(request.POST['candidate'])
+            candidatesVote_resp = requests.get(server+'/api/candidateVote').json()
+            selected_candidate_id = queryCandidateInfo(candidatesVote_resp, len(candidatesVote_resp), selected_cadidate_id)
+            candidate_vote_asset = "resource:org.ecp.voting.candidateVote#{}".format(selected_candidate_id)
+            ifVotedAsset = "resource:org.ecp.voting.ifVoted#{}".format(request.user.username)
+            vote={
+                    "$class": "org.ecp.voting.vote",
+                    "candidateVoteAsset": candidate_vote_asset,
+                    "ifVotedAsset": ifVotedAsset
             }
-        }
-        #data = json.loads(payload)
+            print(vote)
+
+            print(requests.post(server + '/api/vote', json=vote))
+
     return render(request,'dappx/ballot.html' , { 'candidates' : constituency_candidates })

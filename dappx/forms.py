@@ -1,5 +1,5 @@
 from django import forms
-from dappx.models import VoterProfileInfo, CandidateProfileInfo
+from dappx.models import VoterProfileInfo, CandidateProfileInfo, CandidateVote
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 class UserForm(forms.ModelForm):
@@ -43,5 +43,5 @@ class CandidateProfileInfoForm(forms.ModelForm):
 class BallotBox(forms.ModelForm):
 
     class Meta():
-        model = CandidateProfileInfo
-        fields = ['party']
+        model = CandidateVote
+        fields = ()

@@ -25,5 +25,6 @@ def __str__(self):
 
 
 class CandidateVote(models.Model):
+    #candidateProfile  = models.OneToOneField(CandidateProfileInfo, on_delete=models.CASCADE)
     candidate_vote_id = models.AutoField(primary_key = True)
     candidate_id = models.CharField(max_length=128)
